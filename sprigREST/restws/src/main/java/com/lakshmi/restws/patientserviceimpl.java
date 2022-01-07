@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import org.springframework.stereotype.Service;
 
+import com.lakshmi.restws.exception.patientBesineesException;
 import com.lakshmi.restws.model.patient;
 
 @Service
@@ -44,9 +47,16 @@ public class patientserviceimpl implements patientserivce {
 	@Override
 	public patient getpatient(long id) {
 		
+		if(patients.get(id)==null)
+			
+		{
+			//throw new WebApplicationException(Response.Status.NOT_FOUND);
+			throw new NotFoundException();
+			
+		}
 		return patients.get(id);
 	}
-
+//exception mappers
 	@Override
 	public Response createPatient(patient patient) {
 		patient.setId(++currentid);
@@ -63,8 +73,10 @@ public class patientserviceimpl implements patientserivce {
 	  Response response;
 	  if(currentpatient!=null)
 	  { 
-		 patients.put(patient.getId(), patient);		
-		 response= Response.ok(patient).build();
+		 patients.put(patient.getId(), patient);
+		 
+		 throw new patientBesineesException();
+		 //response= Response.ok(patient).build();
 	 }  
 	  else
 	  { 
